@@ -83,8 +83,8 @@
 }
 
 - (NSManagedObjectModel *)managedObjectModel {
-    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:self.MOMName
-                                              withExtension:@"momd"];
+    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:self.MOMName withExtension:@"momd"];
+    
     return [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
 }
 
