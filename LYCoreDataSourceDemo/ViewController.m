@@ -44,8 +44,6 @@
                                                                           predicate:nil
                                                                     sortDescriptors:@[sortDescroptor]
                                                                  sectionNameKeyPath:nil];
-    
-    NSLog(@"%p", self.view);
 }
 
 - (void)touchAdd {
