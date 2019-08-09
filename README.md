@@ -1,2 +1,2 @@
 # LYCoreDataSource
-test
+local
