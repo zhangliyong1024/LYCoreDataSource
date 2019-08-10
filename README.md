@@ -1,14 +1,14 @@
 # LYCoreDataSource
 
-### 简介
+### 架构介绍
 
-基于三层MOC设计的CoreData数据持久化助手
+基于三层MOC设计的CoreData数据持久化助手！
 
 ![image](https://kxl-001.oss-cn-beijing.aliyuncs.com/kxl-help/3moc.jpg)
 
 ### 使用教程
 
-> 下面的教程默认用户没有在创建项目的时候勾选Use CoreData选项，如果勾选了，请删除Appdelete.m和.h中的CoreData初始化代码。
+> 下面的教程默认用户没有在创建项目的时候勾选Use CoreData选项，如果勾选了，请删除Appdelete.m和.h中的对应的CoreData默认初始化代码。
 
 1. 创建模型文件
 
