@@ -132,24 +132,4 @@
     }
 }
 
-/*
- 如果项目有需求用到ObjectID，需要开启下面的通知到每个上下文进行同步
- [[NSNotificationCenter defaultCenter] addObserver:self
- selector:@selector(contextViewSave:)
- name:NSManagedObjectContextWillSaveNotification
- object:_rootContext];
- 
- - (void)contextViewSave:(NSNotification *)notification {
- NSManagedObjectContext *context = notification.object;
- NSSet *insertedObjects = [context insertedObjects];
- 
- if([insertedObjects count]) {
- NSError *error = nil;
- if(![context obtainPermanentIDsForObjects:insertedObjects.allObjects error:&error]) {
- NSLog(@"Failed to obtainPermanentIDsForObjects: %@\n%@", [error localizedDescription], [error userInfo]);
- }
- }
- }
- */
-
 @end
