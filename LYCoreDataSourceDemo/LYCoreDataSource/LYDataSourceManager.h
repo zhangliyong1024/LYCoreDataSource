@@ -19,6 +19,7 @@ typedef void (^Callback)(void);
 
 - (void)initCoreDataStackWithMOM:(NSString *)MOMName
                           sqlite:(NSString *)sqliteName
+                     databaseKey:(NSString *)databaseKey
                         callback:(nullable Callback)callback;
 
 - (NSManagedObjectContext *)newPrivateContext;

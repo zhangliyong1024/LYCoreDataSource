@@ -7,6 +7,7 @@
 //
 
 #import "LYDataSourceManager.h"
+#import "NSData+MD5.h"
 
 @interface LYDataSourceManager()
 
@@ -33,11 +34,36 @@
 
 - (void)initCoreDataStackWithMOM:(NSString *)MOMName
                           sqlite:(NSString *)sqliteName
+                     databaseKey:(NSString *)databaseKey
                         callback:(Callback)callback {
     self.MOMName = MOMName;
     self.sqliteName = sqliteName;
     
-    self.persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
+    NSManagedObjectModel *model = [self managedObjectModel];
+    NSDictionary *hashs = model.entityVersionHashesByName;
+    NSUInteger hash = 0;
+    for (NSData *item in hashs.objectEnumerator) {
+        NSString *md5 = [item MD5];
+        hash += md5.hash;
+    }
+    
+    /*
+     * databaseKey区分不同环境，这里用来做强制更新
+     * 如果对databaseKey做变更，即使数据库所有表字段都没修改也会清空数据库
+     */
+    
+    hash += databaseKey.hash;
+    
+    NSInteger oldKey = [[NSUserDefaults standardUserDefaults] integerForKey:sqliteName];
+
+    // 这里简化操作，不做数据迁移，直接清空旧的数据库
+    if (oldKey && oldKey != hash) {
+        [[NSFileManager defaultManager] removeItemAtURL:[self storeUrl] error:nil];
+        [[NSUserDefaults standardUserDefaults] setInteger:hash forKey:sqliteName];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    
+    self.persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
     
     // 作为Core Data初始化的一部分，将持久性存储（NSPersistentStore）添加到持久性存储协调器（NSPersistentStoreCoordinator）会是一个比较耗时的过程，
     // 该操作可能需要一段未知的时间，并且在主队列上执行该操作可能会阻塞用户界面，由于iOS对应用的启动时间有限制，这样的阻塞可能会导致应用程序的终止，

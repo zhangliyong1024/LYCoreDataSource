@@ -20,10 +20,23 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    [[LYDataSourceManager manager] initCoreDataStackWithMOM:@"LYCoreDataSourceDemo"
-                                                     sqlite:@"LYCoreDataSourceDemo"
+    NSString *MOM, *sqlite, *databaseKey;
+    
+#ifdef ENV_DEV
+    MOM = @"Model";
+    sqlite = @"dev.sqlite";
+    databaseKey = @"1000";
+#else
+    MOM = @"Model";
+    sqlite = @"pub.sqlite";
+    databaseKey = @"1000";
+#endif
+    
+    [[LYDataSourceManager manager] initCoreDataStackWithMOM:MOM
+                                                     sqlite:sqlite
+                                                databaseKey:databaseKey
                                                    callback:^{
-                                                       
+                                                       // 处理和和数据持久化相关的操作
                                                    }];
     
     
