@@ -37,11 +37,26 @@ pod 'LYCoreDataSource'
 
 4. 初始化CoreDataStack
 
+推荐您根据不同环境初始化对应的模型和数据库，您需要填入三个参数，MOM（模型文件名称）、sqliteName（数据库文件名称）、databaseKey（用来做强制更新），具体参考源码有对应的解释。
+
 ```
-[[LYDataSourceManager manager] initCoreDataStackWithMOM:@"LYCoreDataSourceDemo"
-                                                     sqlite:@"LYCoreDataSourceDemo"
+    NSString *MOM, *sqlite, *databaseKey;
+    
+#ifdef ENV_DEV
+    MOM = @"Model";
+    sqlite = @"dev.sqlite";
+    databaseKey = @"1000";
+#else
+    MOM = @"Model";
+    sqlite = @"pub.sqlite";
+    databaseKey = @"1000";
+#endif
+    
+    [[LYDataSourceManager manager] initCoreDataStackWithMOM:MOM
+                                                     sqlite:sqlite
+                                                databaseKey:databaseKey
                                                    callback:^{
-                                                       // 处理和和持久化相关的操作
+                                                       // 处理和和数据持久化相关的操作
                                                    }];
 ```
 
