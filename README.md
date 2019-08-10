@@ -6,18 +6,6 @@
 
 ![image](https://kxl-001.oss-cn-beijing.aliyuncs.com/kxl-help/3moc.jpg)
 
-### 安装
-
-- CocoaPods
-
-```
-pod 'LYCoreDataSource'
-```
-
-- 手动
-
-可将源码中的LYCoreDataSource文件夹直接拖入你的项目，导入LYCoreDataSource.h头文件即可使用！
-
 ### 使用教程
 
 > 下面的教程默认用户没有在创建项目的时候勾选Use CoreData选项，如果勾选了，请删除Appdelete.m和.h中的CoreData初始化代码。
@@ -28,7 +16,7 @@ pod 'LYCoreDataSource'
 
 2. 创建抽象实体基类
 
-源码中的模型文件中我已经创建好了一个BaseEntity，注意看右侧扩展栏中已经勾选上了Abstract Entity。表面这个实体类不会被实例化，只能被子类继承。实体类创建完成后给实体类添加一个syncFlag属性，后面我们在做数据同步时会用到。
+源码中的模型文件中我已经创建好了一个BaseEntity，注意看右侧扩展栏中已经勾选上了Abstract Entity。表明这个实体类不会被实例化，只能被子类继承。实体类创建完成后给实体类添加一个syncFlag属性，后面我们在做数据同步时会用到。
 
 3. 导入头文件
 ```
@@ -63,6 +51,18 @@ pod 'LYCoreDataSource'
 5. CRUD
 
 参考Demo中的用法。
+
+### 安装
+
+- CocoaPods
+
+```
+pod 'LYCoreDataSource'
+```
+
+- 手动
+
+可将源码中的LYCoreDataSource文件夹直接拖入你的项目，导入LYCoreDataSource.h头文件即可使用！
 
 ### 联系方式
 
