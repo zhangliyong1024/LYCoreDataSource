@@ -1,15 +1,15 @@
 //
-//  NSData+MD5.m
+//  NSData+LYCoreDataSource.m
 //  LYCoreDataSourceDemo
 //
 //  Created by Polly polly on 10/08/2019.
 //  Copyright © 2019 zhangliyong. All rights reserved.
 //
 
-#import "NSData+MD5.h"
+#import "NSData+LYCoreDataSource.h"
 #import <CommonCrypto/CommonDigest.h>
 
-@implementation NSData (MD5)
+@implementation NSData (LYCoreDataSource)
 
 - (NSString *)MD5 {
     unsigned char r[CC_MD5_DIGEST_LENGTH];

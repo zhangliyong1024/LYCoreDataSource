@@ -17,9 +17,16 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSString *phone;
 
++ (instancetype)contactFromEntity:(ContactEntity *)item;
+
 @end
 
 @interface ContactDataSource : LYDataSource
+
+- (ContactData *)contactWithUid:(NSString *)uid;
+
+- (ContactData *)contactAtIndexPath:(NSIndexPath *)indexPath
+                         controller:(NSFetchedResultsController *)controller;
 
 @end
 

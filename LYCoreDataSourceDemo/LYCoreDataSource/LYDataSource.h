@@ -7,11 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "LYDataSourceManager.h"
+#import "LYCoreDataManager.h"
+
+typedef void (^Callback)(void);
 
 NS_ASSUME_NONNULL_BEGIN
 
 @class LYDataSource;
+@class BaseEntity;
 
 @protocol LYDataSourceDelegate <NSObject>
 
@@ -69,7 +72,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)deleteObjects:(NSArray *)objects
              callback:(nullable Callback)callback;
 
-// 子类需要重写的方法
+- (NSArray *)executeFetchRequest:(NSFetchRequest *)fetchRequest
+                       predicate:(NSPredicate *)predicate;
+
+// 子类可以重写的方法
 
 - (NSString *)entityNameForObject:(id)object;
 

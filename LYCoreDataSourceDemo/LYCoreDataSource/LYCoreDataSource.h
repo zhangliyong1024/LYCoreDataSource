@@ -9,7 +9,7 @@
 #ifndef LYCoreDataSource_h
 #define LYCoreDataSource_h
 
-#import "LYDataSourceManager.h"
+#import "LYCoreDataManager.h"
 #import "LYDataSource.h"
 #import "NSManagedObject+LYCoreDataSource.h"
 

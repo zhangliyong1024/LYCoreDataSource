@@ -11,16 +11,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef void (^Callback)(void);
-
-@interface LYDataSourceManager : NSObject
+@interface LYCoreDataManager : NSObject
 
 + (instancetype)manager;
 
 - (void)initCoreDataStackWithMOM:(NSString *)MOMName
                           sqlite:(NSString *)sqliteName
-                     databaseKey:(NSString *)databaseKey
-                        callback:(nullable Callback)callback;
+                     databaseKey:(NSString *)databaseKey;
 
 - (NSManagedObjectContext *)newPrivateContext;
 

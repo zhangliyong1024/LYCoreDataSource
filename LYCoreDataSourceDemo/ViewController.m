@@ -13,7 +13,7 @@
 
 @property (nonatomic, strong) UITableView                *tableView;
 @property (nonatomic, strong) ContactDataSource          *dataSource;
-@property (nonatomic, strong) NSFetchedResultsController *fetchedResultsController;
+@property (nonatomic, strong) NSFetchedResultsController *contactResultsController;
 
 @end
 
@@ -23,23 +23,25 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    self.view.backgroundColor = [UIColor orangeColor];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                                                                           target:self
+                                                                                           action:@selector(touchAdd)];
     
-    self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+    self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds
+                                                  style:UITableViewStylePlain];
     
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     
     [self.view addSubview:self.tableView];
     
+    [self registerDataBase];
+}
+
+- (void)registerDataBase {
     self.dataSource = [ContactDataSource sharedInstance];
-    
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                                                           target:self
-                                                                                           action:@selector(touchAdd)];
-    
     NSSortDescriptor *sortDescroptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
-    self.fetchedResultsController = [[ContactDataSource sharedInstance] addDelegate:self
+    self.contactResultsController = [[ContactDataSource sharedInstance] addDelegate:self
                                                                              entity:[ContactEntity entityName]
                                                                           predicate:nil
                                                                     sortDescriptors:@[sortDescroptor]
@@ -58,11 +60,11 @@
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView  {
-    return [self.dataSource numberOfSections:self.fetchedResultsController];
+    return [self.dataSource numberOfSections:self.contactResultsController];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.dataSource numberOfItems:self.fetchedResultsController
+    return [self.dataSource numberOfItems:self.contactResultsController
                                 inSection:section];
 }
 
@@ -70,11 +72,12 @@
     NSString *identifier = @"contactCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     if(!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:identifier];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
+                                      reuseIdentifier:identifier];
     }
     
-    ContactData *contact = [self.dataSource objectAtIndexPath:indexPath controller:self.fetchedResultsController];
-    
+    ContactData *contact = [self.dataSource contactAtIndexPath:indexPath
+                                                    controller:self.contactResultsController];
     cell.textLabel.text = contact.name;
     cell.detailTextLabel.text = contact.phone;
     
@@ -84,7 +87,7 @@
 #pragma mark - LYDataSourceDelegate
 
 - (void)willChangeContent:(NSFetchedResultsController *)controller {
-    if(controller == self.fetchedResultsController) {
+    if(controller == self.contactResultsController) {
         [self.tableView beginUpdates];
     }
 }
@@ -93,7 +96,7 @@
                  atIndex:(NSUInteger)sectionIndex
            forChangeType:(NSFetchedResultsChangeType)type
               controller:(NSFetchedResultsController *)controller {
-    if(controller == self.fetchedResultsController) {
+    if(controller == self.contactResultsController) {
         switch(type) {
             case NSFetchedResultsChangeInsert:
                 [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
@@ -113,7 +116,7 @@
           forChangeType:(NSFetchedResultsChangeType)type
            newIndexPath:(NSIndexPath *)newIndexPath
              controller:(NSFetchedResultsController *)controller {
-    if(controller == self.fetchedResultsController) {
+    if(controller == self.contactResultsController) {
         switch(type) {
             case NSFetchedResultsChangeInsert:
                 [self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
@@ -133,7 +136,7 @@
 }
 
 - (void)didChangeContent:(NSFetchedResultsController *)controller {
-    if(controller == self.fetchedResultsController) {
+    if(controller == self.contactResultsController) {
         [self.tableView endUpdates];
     }
 }

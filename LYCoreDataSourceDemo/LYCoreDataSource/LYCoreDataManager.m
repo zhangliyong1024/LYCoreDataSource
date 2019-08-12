@@ -6,10 +6,10 @@
 //  Copyright © 2019 zhangliyong. All rights reserved.
 //
 
-#import "LYDataSourceManager.h"
-#import "NSData+MD5.h"
+#import "LYCoreDataManager.h"
+#import "NSData+LYCoreDataSource.h"
 
-@interface LYDataSourceManager()
+@interface LYCoreDataManager()
 
 @property (nonatomic, strong) NSManagedObjectContext       *rootContext;
 @property (nonatomic, strong) NSManagedObjectContext       *mainContext;
@@ -20,13 +20,13 @@
 
 @end
 
-@implementation LYDataSourceManager
+@implementation LYCoreDataManager
 
 + (instancetype)manager {
     static dispatch_once_t onceToken;
-    static LYDataSourceManager *manager = nil;
+    static LYCoreDataManager *manager = nil;
     dispatch_once(&onceToken, ^{
-        manager = [LYDataSourceManager new];
+        manager = [LYCoreDataManager new];
     });
     
     return manager;
@@ -34,8 +34,7 @@
 
 - (void)initCoreDataStackWithMOM:(NSString *)MOMName
                           sqlite:(NSString *)sqliteName
-                     databaseKey:(NSString *)databaseKey
-                        callback:(Callback)callback {
+                     databaseKey:(NSString *)databaseKey {
     self.MOMName = MOMName;
     self.sqliteName = sqliteName;
     
@@ -55,9 +54,9 @@
     hash += databaseKey.hash;
     
     NSInteger oldKey = [[NSUserDefaults standardUserDefaults] integerForKey:sqliteName];
-
+    
     // 这里简化操作，不做数据迁移，直接清空旧的数据库
-    if (oldKey && oldKey != hash) {
+    if (oldKey != hash) {
         [[NSFileManager defaultManager] removeItemAtURL:[self storeUrl] error:nil];
         [[NSUserDefaults standardUserDefaults] setInteger:hash forKey:sqliteName];
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -65,31 +64,23 @@
     
     self.persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:model];
     
-    // 作为Core Data初始化的一部分，将持久性存储（NSPersistentStore）添加到持久性存储协调器（NSPersistentStoreCoordinator）会是一个比较耗时的过程，
-    // 该操作可能需要一段未知的时间，并且在主队列上执行该操作可能会阻塞用户界面，由于iOS对应用的启动时间有限制，这样的阻塞可能会导致应用程序的终止，
-    // 这里我们添加到后台队列，在添加完成后回调主队类继续其他操作。
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-        NSError *error = nil;
-        if (![self.persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
-                                                           configuration:nil
-                                                                     URL:[self storeUrl]
-                                                                 options:nil
-                                                                   error:&error]) {
-            if (error != nil) {
-                NSLog(@"Failed to initalize persistent store: %@\n%@", [error localizedDescription], [error userInfo]);
-                abort();
-            }
+    /*
+     * 作为Core Data初始化的一部分，将持久性存储（NSPersistentStore）添加到持久性存储协调器（NSPersistentStoreCoordinator）会是一个比较耗时的过程，
+     * 该操作可能需要一段未知的时间，并且在主队列上执行该操作可能会阻塞用户界面，由于iOS对应用的启动时间有限制，这样的阻塞可能会导致应用程序的终止，
+     * 可以考虑添加到后台队列，在添加完成后回调主队类继续其他操作。
+     * 但是，我这里放到主线程执行，主要是为了简化操作流程，目前没发现这样的阻塞导致程序终止的现象。
+    */
+    NSError *error = nil;
+    if (![self.persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
+                                                       configuration:nil
+                                                                 URL:[self storeUrl]
+                                                             options:nil
+                                                               error:&error]) {
+        if (error != nil) {
+            NSLog(@"Failed to initalize persistent store: %@\n%@", [error localizedDescription], [error userInfo]);
+            abort();
         }
-        
-        if (!callback) {
-            return;
-        }
-        
-        dispatch_sync(dispatch_get_main_queue(), ^{
-            callback();
-        });
-    });
+    }
 }
 
 - (NSURL *)applicationDocumentsDirectory {

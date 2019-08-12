@@ -10,6 +10,20 @@
 
 @implementation ContactData
 
++ (instancetype)contactFromEntity:(ContactEntity *)item {
+    return [[self alloc] initWithEntity:item];
+}
+
+- (instancetype)initWithEntity:(ContactEntity *)entity {
+    if (self = [super init]) {
+        self.uid = entity.uid;
+        self.name = entity.name;
+        self.phone = entity.phone;
+    }
+    
+    return self;
+}
+
 @end
 
 @implementation ContactDataSource
@@ -18,7 +32,7 @@
     static dispatch_once_t onceToken;
     static ContactDataSource *instance = nil;
     dispatch_once(&onceToken, ^{
-        instance = [[ContactDataSource alloc] initWithPrivateContext:[[LYDataSourceManager manager] newPrivateContext]];
+        instance = [[ContactDataSource alloc] initWithPrivateContext:[[LYCoreDataManager manager] newPrivateContext]];
     });
     
     return instance;
@@ -79,6 +93,19 @@
             [self.privateContext deleteObject:item];
         }
     }
+}
+
+- (ContactData *)contactWithUid:(NSString *)uid {
+    ContactEntity *entity = [self executeFetchRequest:[ContactEntity fetchRequest]
+                                            predicate:[NSPredicate predicateWithFormat:@"uid == %@", uid]].firstObject;
+    
+    return [ContactData contactFromEntity:entity];
+}
+
+- (ContactData *)contactAtIndexPath:(NSIndexPath *)indexPath controller:(NSFetchedResultsController *)controller {
+    ContactEntity *entity = [self objectAtIndexPath:indexPath controller:controller];
+    
+    return [ContactData contactFromEntity:entity];
 }
 
 @end

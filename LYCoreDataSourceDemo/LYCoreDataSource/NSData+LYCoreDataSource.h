@@ -1,5 +1,5 @@
 //
-//  NSData+MD5.h
+//  NSData+LYCoreDataSource.h
 //  LYCoreDataSourceDemo
 //
 //  Created by Polly polly on 10/08/2019.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NSData (MD5)
+@interface NSData (LYCoreDataSource)
 
 - (NSString *)MD5;
 

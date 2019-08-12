@@ -66,7 +66,7 @@
             [self onAddObject:object];
         }
         
-        [[LYDataSourceManager manager] save:self.privateContext];
+        [[LYCoreDataManager manager] save:self.privateContext];
         
         if(callback) {
             callback();
@@ -124,7 +124,7 @@
             }
         }
         
-        [[LYDataSourceManager manager] save:self.privateContext];
+        [[LYCoreDataManager manager] save:self.privateContext];
         
         if(callback) {
             callback();
@@ -156,7 +156,7 @@
             [self onDeleteObject:object];
         }
         
-        [[LYDataSourceManager manager] save:self.privateContext];
+        [[LYCoreDataManager manager] save:self.privateContext];
         
         if(callback) {
             callback();
@@ -164,6 +164,19 @@
     }];
 }
 
+- (NSArray *)executeFetchRequest:(NSFetchRequest *)fetchRequest
+                       predicate:(NSPredicate *)predicate {
+    fetchRequest.predicate = predicate;
+    
+    NSError *error = nil;
+    NSArray *results = [self.privateContext executeFetchRequest:fetchRequest error:&error];
+    if(error) {
+        NSAssert(NO, @"Error executeFetchRequest: %@\n%@", [error localizedDescription], [error userInfo]);
+    }
+    
+    return results;
+}
+ 
 - (NSString *)entityNameForObject:(id)object {
     NSAssert(NO, @"implement this method in your sub-class");
     return nil;

@@ -20,8 +20,19 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
-    NSString *MOM, *sqlite, *databaseKey;
+    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
+    self.window.backgroundColor = [UIColor whiteColor];
+    [self.window makeKeyAndVisible];
+    UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:[ViewController new]];
+    self.window.rootViewController = navi;
     
+    [self initCoreData];
+
+    return YES;
+}
+
+- (void)initCoreData {
+    NSString *MOM, *sqlite, *databaseKey;
 #ifdef ENV_DEV
     MOM = @"Model";
     sqlite = @"dev.sqlite";
@@ -31,24 +42,10 @@
     sqlite = @"pub.sqlite";
     databaseKey = @"1000";
 #endif
-    
-    [[LYDataSourceManager manager] initCoreDataStackWithMOM:MOM
-                                                     sqlite:sqlite
-                                                databaseKey:databaseKey
-                                                   callback:^{
-                                                       // 处理和和数据持久化相关的操作
-                                                   }];
-    
-    
-    self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    self.window.backgroundColor = [UIColor whiteColor];
-    [self.window makeKeyAndVisible];
-    UINavigationController *navi = [[UINavigationController alloc] initWithRootViewController:[ViewController new]];
-    self.window.rootViewController = navi;
-    
-    return YES;
+    [[LYCoreDataManager manager] initCoreDataStackWithMOM:MOM
+                                                   sqlite:sqlite
+                                              databaseKey:databaseKey];
 }
-
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
