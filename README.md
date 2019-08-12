@@ -2,7 +2,7 @@
 
 ### 架构介绍
 
-基于三层MOC设计的CoreData数据持久化助手！
+基于三层MOC设计的CoreData数据持久化框架！
 
 ![image](https://kxl-001.oss-cn-beijing.aliyuncs.com/kxl-help/3moc.jpg)
 
