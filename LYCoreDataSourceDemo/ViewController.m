@@ -23,9 +23,16 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
+    self.title = @"点击删除";
+    
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                                            target:self
                                                                                            action:@selector(touchAdd)];
+    
+    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"同步"
+                                                                             style:UIBarButtonItemStylePlain
+                                                                            target:self
+                                                                            action:@selector(syncAllData)];
     
     self.tableView = [[UITableView alloc] initWithFrame:self.view.bounds
                                                   style:UITableViewStylePlain];
@@ -57,6 +64,17 @@
     [[ContactDataSource sharedInstance] addObjects:@[contact]];
 }
 
+- (void)syncAllData {
+    // 同步操作
+    ContactData *contact = [ContactData new];
+    contact.uid = @"10086";
+    contact.name = @"关羽";
+    contact.phone = @"1234567890";
+    // predicate不填，默认同步所有数据
+    [[ContactDataSource sharedInstance] addObjects:@[contact]
+                                     syncPredicate:nil];
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView  {
@@ -82,6 +100,11 @@
     cell.detailTextLabel.text = contact.phone;
     
     return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    ContactData *contact = [self.dataSource contactAtIndexPath:indexPath controller:self.contactResultsController];
+    [[ContactDataSource sharedInstance] deleteObject:contact];
 }
 
 #pragma mark - LYDataSourceDelegate

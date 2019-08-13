@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "LYCoreDataSource"
-  spec.version      = "1.0.2"
+  spec.version      = "1.1.0"
   spec.summary      = "CoreData Helper"
 
   # This description is used to generate tags and improve search results.
@@ -79,7 +79,7 @@ Pod::Spec.new do |spec|
   #  Supports git, hg, bzr, svn and HTTP.
   #
 
-  spec.source       = { :git => "https://github.com/zhangliyong1024/LYCoreDataSource.git", :tag => "1.0.2" }
+  spec.source       = { :git => "https://github.com/zhangliyong1024/LYCoreDataSource.git", :tag => "1.1.0" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
