@@ -48,11 +48,11 @@
 - (void)registerDataBase {
     self.dataSource = [ContactDataSource sharedInstance];
     NSSortDescriptor *sortDescroptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
-    self.contactResultsController = [[ContactDataSource sharedInstance] addDelegate:self
-                                                                             entity:[ContactEntity entityName]
-                                                                          predicate:nil
-                                                                    sortDescriptors:@[sortDescroptor]
-                                                                 sectionNameKeyPath:nil];
+    self.contactResultsController = [self.dataSource addDelegate:self
+                                                          entity:[ContactEntity entityName]
+                                                       predicate:nil
+                                                 sortDescriptors:@[sortDescroptor]
+                                              sectionNameKeyPath:nil];
 }
 
 - (void)touchAdd {

@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol LYDataSourceDelegate <NSObject>
 
+@optional
+
 - (void)willChangeContent:(NSFetchedResultsController *)controller;
 
 - (void)didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo
@@ -30,6 +32,8 @@ NS_ASSUME_NONNULL_BEGIN
           forChangeType:(NSFetchedResultsChangeType)type
            newIndexPath:(NSIndexPath *)newIndexPath
              controller:(NSFetchedResultsController *)controller;
+
+@required
 
 - (void)didChangeContent:(NSFetchedResultsController *)controller;
 
