@@ -56,12 +56,14 @@
 }
 
 - (void)touchAdd {
-    ContactData *contact = [ContactData new];
-    NSString *string = @([NSDate date].timeIntervalSince1970).stringValue;
-    contact.uid = string;
-    contact.name = string;
-    contact.phone = string;
-    [[ContactDataSource sharedInstance] addObjects:@[contact]];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        ContactData *contact = [ContactData new];
+        NSString *string = @([NSDate date].timeIntervalSince1970).stringValue;
+        contact.uid = string;
+        contact.name = string;
+        contact.phone = string;
+        [[ContactDataSource sharedInstance] addObjects:@[contact]];
+    });
 }
 
 - (void)syncAllData {
