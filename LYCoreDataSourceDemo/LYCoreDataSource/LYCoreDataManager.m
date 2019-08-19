@@ -93,7 +93,6 @@
     return [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
 }
 
-// 根上下文负责与持久化存储器交互
 - (NSManagedObjectContext *)rootContext {
     if(!_rootContext) {
         _rootContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];

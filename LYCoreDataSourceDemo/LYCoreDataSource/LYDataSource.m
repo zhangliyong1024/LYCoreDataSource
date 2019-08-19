@@ -34,7 +34,6 @@
 
 - (NSMapTable *)mapTable {
     if(!_mapTable) {
-        // NSFetchedResultsController作为key需使用强引用，对delegate对象使用弱引用
         _mapTable = [NSMapTable mapTableWithKeyOptions:NSPointerFunctionsStrongMemory
                                           valueOptions:NSPointerFunctionsWeakMemory];
     }
@@ -206,7 +205,6 @@
                                   predicate:(NSPredicate *)predicate
                             sortDescriptors:(NSArray<NSSortDescriptor *> *)sortDescriptors
                          sectionNameKeyPath:(NSString *)sectionNameKeyPath {
-    // 数据绑定主要还是用在UI相关，所以我们这里限定在主线程操作
     if(![NSThread isMainThread]) {
         NSAssert(NO, @"should be initialized on the main thread!");
     }
@@ -215,7 +213,6 @@
     fetchRequest.predicate = predicate;
     fetchRequest.sortDescriptors = sortDescriptors;
     
-    // 绑定到mainContext
     NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                                                                                managedObjectContext:self.mainContext
                                                                                                  sectionNameKeyPath:sectionNameKeyPath
