@@ -96,8 +96,8 @@
 }
 
 - (ContactData *)contactWithUid:(NSString *)uid {
-    ContactEntity *entity = [self executeFetchRequest:[ContactEntity fetchRequest]
-                                            predicate:[NSPredicate predicateWithFormat:@"uid == %@", uid]].firstObject;
+    ContactEntity *entity = [self executeFetchOnEntity:[ContactEntity class]
+                                             predicate:[NSPredicate predicateWithFormat:@"uid == %@", uid]].firstObject;
     
     return [ContactData contactFromEntity:entity];
 }

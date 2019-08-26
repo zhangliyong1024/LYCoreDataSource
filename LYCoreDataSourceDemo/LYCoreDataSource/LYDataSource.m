@@ -165,18 +165,20 @@
 
 - (NSArray *)executeFetchOnEntity:(Class)entity
                         predicate:(NSPredicate *)predicate {
+    if (![NSThread currentThread].isMainThread) {
+        NSAssert(NO, @"Please invoke this method in main thread !");
+    }
+    
     NSFetchRequest *fetchRequest = [entity performSelector:@selector(fetchRequest)];
     fetchRequest.predicate = predicate;
     
-    __block NSArray *results = nil;
-    
-    [self.privateContext performBlockAndWait:^{
-        NSError *error = nil;
-        results = [self.privateContext executeFetchRequest:fetchRequest error:&error];
-        if(error) {
-            NSAssert(NO, @"Error executeFetchRequest: %@\n%@", [error localizedDescription], [error userInfo]);
-        }
-    }];
+    NSArray *results = nil;
+    NSError *error = nil;
+    results = [self.mainContext executeFetchRequest:fetchRequest
+                                              error:&error];
+    if(error) {
+        NSAssert(NO, @"Error executeFetchRequest: %@\n%@", [error localizedDescription], [error userInfo]);
+    }
     
     return results;
 }

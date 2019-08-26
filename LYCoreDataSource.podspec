@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 s.name         = 'LYCoreDataSource'
-s.version      = '1.1.2'
+s.version      = '1.1.3'
 s.summary      = 'CoreData Helper'
 s.homepage     = 'https://github.com/zhangliyong1024/LYCoreDataSource'
 s.license      = 'MIT'
