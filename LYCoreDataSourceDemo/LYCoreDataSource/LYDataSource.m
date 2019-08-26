@@ -163,15 +163,20 @@
     }];
 }
 
-- (NSArray *)executeFetchRequest:(NSFetchRequest *)fetchRequest
-                       predicate:(NSPredicate *)predicate {
+- (NSArray *)executeFetchOnEntity:(Class)entity
+                        predicate:(NSPredicate *)predicate {
+    NSFetchRequest *fetchRequest = [entity performSelector:@selector(fetchRequest)];
     fetchRequest.predicate = predicate;
     
-    NSError *error = nil;
-    NSArray *results = [self.privateContext executeFetchRequest:fetchRequest error:&error];
-    if(error) {
-        NSAssert(NO, @"Error executeFetchRequest: %@\n%@", [error localizedDescription], [error userInfo]);
-    }
+    __block NSArray *results = nil;
+    
+    [self.privateContext performBlockAndWait:^{
+        NSError *error = nil;
+        results = [self.privateContext executeFetchRequest:fetchRequest error:&error];
+        if(error) {
+            NSAssert(NO, @"Error executeFetchRequest: %@\n%@", [error localizedDescription], [error userInfo]);
+        }
+    }];
     
     return results;
 }

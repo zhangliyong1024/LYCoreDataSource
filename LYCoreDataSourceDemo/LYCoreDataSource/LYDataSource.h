@@ -47,6 +47,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithPrivateContext:(NSManagedObjectContext *)privateContext;
 
+// 同步查询方法
+
+- (NSArray *)executeFetchOnEntity:(Class)entity
+                        predicate:(NSPredicate *)predicate;
+
 // 异步添加、修改以及删除方法
 
 - (void)addObject:(id)object;
@@ -75,9 +80,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)deleteObjects:(NSArray *)objects
              callback:(nullable Callback)callback;
-
-- (NSArray *)executeFetchRequest:(NSFetchRequest *)fetchRequest
-                       predicate:(NSPredicate *)predicate;
 
 // 子类可以重写的方法
 
