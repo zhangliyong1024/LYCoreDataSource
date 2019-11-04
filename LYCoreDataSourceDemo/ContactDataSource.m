@@ -102,8 +102,8 @@
     return [ContactData contactFromEntity:entity];
 }
 
-- (ContactData *)contactAtIndexPath:(NSIndexPath *)indexPath controller:(NSFetchedResultsController *)controller {
-    ContactEntity *entity = [self objectAtIndexPath:indexPath controller:controller];
+- (ContactData *)contactAtIndexPath:(NSIndexPath *)indexPath dataKey:(nonnull NSString *)dataKey {
+    ContactEntity *entity = [self objectAtIndexPath:indexPath dataKey:dataKey];
     
     return [ContactData contactFromEntity:entity];
 }

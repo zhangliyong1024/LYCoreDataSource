@@ -12,8 +12,9 @@
 @interface ViewController () < UITableViewDataSource, UITableViewDelegate, LYDataSourceDelegate >
 
 @property (nonatomic, strong) UITableView                *tableView;
+
 @property (nonatomic, strong) ContactDataSource          *dataSource;
-@property (nonatomic, strong) NSFetchedResultsController *contactResultsController;
+@property (nonatomic, copy)   NSString                   *dataKey;
 
 @end
 
@@ -47,12 +48,14 @@
 
 - (void)registerDataBase {
     self.dataSource = [ContactDataSource sharedInstance];
+    self.dataKey = NSStringFromClass([self class]);
     NSSortDescriptor *sortDescroptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:YES];
-    self.contactResultsController = [self.dataSource addDelegate:self
-                                                          entity:[ContactEntity entityName]
-                                                       predicate:nil
-                                                 sortDescriptors:@[sortDescroptor]
-                                              sectionNameKeyPath:nil];
+    [self.dataSource registerDelegate:self
+                              dataKey:self.dataKey
+                               entity:[ContactEntity entityName]
+                            predicate:nil
+                      sortDescriptors:@[sortDescroptor]
+                   sectionNameKeyPath:nil];
 }
 
 - (void)touchAdd {
@@ -80,11 +83,11 @@
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView  {
-    return [self.dataSource numberOfSections:self.contactResultsController];
+    return [self.dataSource numberOfSections:self.dataKey];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [self.dataSource numberOfItems:self.contactResultsController
+    return [self.dataSource numberOfItems:self.dataKey
                                 inSection:section];
 }
 
@@ -97,7 +100,7 @@
     }
     
     ContactData *contact = [self.dataSource contactAtIndexPath:indexPath
-                                                    controller:self.contactResultsController];
+                                                       dataKey:self.dataKey];
     cell.textLabel.text = contact.name;
     cell.detailTextLabel.text = contact.phone;
     
@@ -105,14 +108,14 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    ContactData *contact = [self.dataSource contactAtIndexPath:indexPath controller:self.contactResultsController];
+    ContactData *contact = [self.dataSource contactAtIndexPath:indexPath dataKey:self.dataKey];
     [[ContactDataSource sharedInstance] deleteObject:contact];
 }
 
 #pragma mark - LYDataSourceDelegate
 
-- (void)willChangeContent:(NSFetchedResultsController *)controller {
-    if(controller == self.contactResultsController) {
+- (void)willChangeContent:(NSString *)dataKey {
+    if([self.dataKey isEqualToString:dataKey]) {
         [self.tableView beginUpdates];
     }
 }
@@ -120,8 +123,8 @@
 - (void)didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo
                  atIndex:(NSUInteger)sectionIndex
            forChangeType:(NSFetchedResultsChangeType)type
-              controller:(NSFetchedResultsController *)controller {
-    if(controller == self.contactResultsController) {
+                 dataKey:(nonnull NSString *)dataKey {
+    if([self.dataKey isEqualToString:dataKey]) {
         switch(type) {
             case NSFetchedResultsChangeInsert:
                 [self.tableView insertSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
@@ -140,8 +143,8 @@
             atIndexPath:(NSIndexPath *)indexPath
           forChangeType:(NSFetchedResultsChangeType)type
            newIndexPath:(NSIndexPath *)newIndexPath
-             controller:(NSFetchedResultsController *)controller {
-    if(controller == self.contactResultsController) {
+                dataKey:(nonnull NSString *)dataKey {
+    if([self.dataKey isEqualToString:dataKey]) {
         switch(type) {
             case NSFetchedResultsChangeInsert:
                 [self.tableView insertRowsAtIndexPaths:@[newIndexPath] withRowAnimation:UITableViewRowAnimationFade];
@@ -160,8 +163,8 @@
     }
 }
 
-- (void)didChangeContent:(NSFetchedResultsController *)controller {
-    if(controller == self.contactResultsController) {
+- (void)didChangeContent:(NSString *)dataKey {
+    if([self.dataKey isEqualToString:dataKey]) {
         [self.tableView endUpdates];
     }
 }

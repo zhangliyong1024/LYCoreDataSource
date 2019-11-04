@@ -20,22 +20,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 @optional
 
-- (void)willChangeContent:(NSFetchedResultsController *)controller;
+- (void)willChangeContent:(NSString *)dataKey;
 
 - (void)didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo
                  atIndex:(NSUInteger)sectionIndex
            forChangeType:(NSFetchedResultsChangeType)type
-              controller:(NSFetchedResultsController *)controller;
+                 dataKey:(NSString *)dataKey;
 
 - (void)didChangeObject:(id)anObject
             atIndexPath:(NSIndexPath *)indexPath
           forChangeType:(NSFetchedResultsChangeType)type
            newIndexPath:(NSIndexPath *)newIndexPath
-             controller:(NSFetchedResultsController *)controller;
+                dataKey:(NSString *)dataKey;
 
 @required
 
-- (void)didChangeContent:(NSFetchedResultsController *)controller;
+- (void)didChangeContent:(NSString *)dataKey;
 
 @end
 
@@ -91,24 +91,25 @@ NS_ASSUME_NONNULL_BEGIN
 
 // 数据绑定相关方法
 
-- (NSFetchedResultsController *)addDelegate:(id<LYDataSourceDelegate>)delegate
-                                     entity:(NSString *)entityName
-                                  predicate:(nullable NSPredicate *)predicate
-                            sortDescriptors:(nonnull NSArray<NSSortDescriptor *>*)sortDescriptors
-                         sectionNameKeyPath:(nullable NSString *)sectionNameKeyPath;
+- (void)registerDelegate:(id<LYDataSourceDelegate>)delegate
+                 dataKey:(NSString *)dataKey
+                  entity:(NSString *)entityName
+               predicate:(nullable NSPredicate *)predicate
+         sortDescriptors:(nonnull NSArray<NSSortDescriptor *> *)sortDescriptors
+      sectionNameKeyPath:(nullable NSString *)sectionNameKeyPath;
 
-- (NSInteger)numberOfSections:(NSFetchedResultsController *)controller;
+- (NSInteger)numberOfSections:(NSString *)dataKey;
 
-- (NSInteger)numberOfItems:(NSFetchedResultsController *)controller
+- (NSInteger)numberOfItems:(NSString *)dataKey
                  inSection:(NSInteger)section;
 
 - (id)objectAtIndexPath:(NSIndexPath *)indexPath
-             controller:(NSFetchedResultsController *)controller;
+                dataKey:(NSString *)dataKey;
 
 - (id<NSFetchedResultsSectionInfo>)sectionInfoForSection:(NSInteger)section
-                                              controller:(NSFetchedResultsController *)controller;
+                                                 dataKey:(NSString *)dataKey;
 
-- (NSArray *)allObjects:(NSFetchedResultsController *)controller;
+- (NSArray *)allObjects:(NSString *)dataKey;
 
 @end
 

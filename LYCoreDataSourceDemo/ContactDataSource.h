@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (ContactData *)contactWithUid:(NSString *)uid;
 
 - (ContactData *)contactAtIndexPath:(NSIndexPath *)indexPath
-                         controller:(NSFetchedResultsController *)controller;
+                            dataKey:(NSString *)dataKey;
 
 @end
 

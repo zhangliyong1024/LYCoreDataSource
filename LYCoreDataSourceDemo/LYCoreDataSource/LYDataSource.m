@@ -13,6 +13,7 @@
 @property (nonatomic, strong) NSManagedObjectContext *privateContext;
 @property (nonatomic, strong) NSManagedObjectContext *mainContext;
 @property (nonatomic, strong) NSMapTable             *mapTable;
+@property (nonatomic, strong) NSMutableDictionary    *mulDictionary;
 
 @end
 
@@ -39,6 +40,14 @@
     }
     
     return _mapTable;
+}
+
+- (NSMutableDictionary *)mulDictionary {
+    if(!_mulDictionary) {
+        _mulDictionary = [NSMutableDictionary dictionary];
+    }
+    
+    return _mulDictionary;
 }
 
 - (void)addObject:(id)object {
@@ -182,7 +191,7 @@
     
     return results;
 }
- 
+
 - (NSString *)entityNameForObject:(id)object {
     NSAssert(NO, @"implement this method in your sub-class");
     return nil;
@@ -207,43 +216,47 @@
     NSAssert(NO, @"implement this method in your sub-class");
 }
 
-- (NSFetchedResultsController *)addDelegate:(id<LYDataSourceDelegate>)delegate
-                                     entity:(NSString *)entityName
-                                  predicate:(NSPredicate *)predicate
-                            sortDescriptors:(NSArray<NSSortDescriptor *> *)sortDescriptors
-                         sectionNameKeyPath:(NSString *)sectionNameKeyPath {
+- (void)registerDelegate:(id<LYDataSourceDelegate>)delegate
+                 dataKey:(NSString *)dataKey
+                  entity:(NSString *)entityName
+               predicate:(NSPredicate *)predicate
+         sortDescriptors:(NSArray<NSSortDescriptor *> *)sortDescriptors
+      sectionNameKeyPath:(NSString *)sectionNameKeyPath {
     if(![NSThread isMainThread]) {
         NSAssert(NO, @"should be initialized on the main thread!");
     }
     
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:entityName];
-    fetchRequest.predicate = predicate;
-    fetchRequest.sortDescriptors = sortDescriptors;
+    NSFetchedResultsController *controller = [self.mulDictionary objectForKey:dataKey];
+    if(!controller) {
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:entityName];
+        [fetchRequest setSortDescriptors:sortDescriptors];
+        controller = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                                         managedObjectContext:self.mainContext
+                                                           sectionNameKeyPath:sectionNameKeyPath
+                                                                    cacheName:nil];
+        controller.delegate = self;
+    }
     
-    NSFetchedResultsController *fetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
-                                                                                               managedObjectContext:self.mainContext
-                                                                                                 sectionNameKeyPath:sectionNameKeyPath
-                                                                                                          cacheName:nil];
-    fetchedResultsController.delegate = self;
+    [controller.fetchRequest setPredicate:predicate];
+    [controller.fetchRequest setSortDescriptors:sortDescriptors];
+    
+    [self.mapTable setObject:delegate forKey:dataKey];
+    [self.mulDictionary setObject:controller forKey:dataKey];
     
     NSError *error = nil;
-    if (![fetchedResultsController performFetch:&error]) {
+    if (![controller performFetch:&error]) {
         NSLog(@"Failed to initialize FetchedResultsController: %@\n%@", [error localizedDescription], [error userInfo]);
         abort();
     }
-    
-    [self.mapTable setObject:delegate forKey:fetchedResultsController];
-    
-    return fetchedResultsController;
 }
 
-- (NSInteger)numberOfSections:(NSFetchedResultsController *)controller {
-    return [[controller sections] count];
+- (NSInteger)numberOfSections:(NSString *)dataKey {
+    return [[[self.mulDictionary objectForKey:dataKey] sections] count];
 }
 
-- (NSInteger)numberOfItems:(NSFetchedResultsController *)controller
+- (NSInteger)numberOfItems:(NSString *)dataKey
                  inSection:(NSInteger)section {
-    NSArray *sections = [controller sections];
+    NSArray *sections = [[self.mulDictionary objectForKey:dataKey] sections];
     if (0 == [sections count]) {
         return 0;
     }
@@ -255,13 +268,13 @@
     return num;
 }
 
-- (id)objectAtIndexPath:(NSIndexPath *)indexPath controller:(NSFetchedResultsController *)controller {
-    return [controller objectAtIndexPath:indexPath];
+- (id)objectAtIndexPath:(NSIndexPath *)indexPath dataKey:(NSString *)dataKey {
+    return [[self.mulDictionary objectForKey:dataKey] objectAtIndexPath:indexPath];
 }
 
 - (id<NSFetchedResultsSectionInfo>)sectionInfoForSection:(NSInteger)section
-                                              controller:(NSFetchedResultsController *)controller {
-    NSArray *sections = [controller sections];
+                                                 dataKey:(NSString *)dataKey {
+    NSArray *sections = [[self.mulDictionary objectForKey:dataKey] sections];
     if ([sections count] == 0) {
         return nil;
     }
@@ -269,8 +282,31 @@
     return [sections objectAtIndex:section];
 }
 
-- (NSArray *)allObjects:(NSFetchedResultsController *)controller {
-    return [controller fetchedObjects];
+- (NSArray *)allObjects:(NSString *)dataKey {
+    return [[self.mulDictionary objectForKey:dataKey] fetchedObjects];
+}
+
+- (NSString *)dataKeyForController:(NSFetchedResultsController *)controller {
+    for (NSString *key in [self.mulDictionary keyEnumerator]) {
+        if ([self.mulDictionary objectForKey:key] == controller) {
+            return key;
+        }
+    }
+    
+    return nil;
+}
+
+- (id <LYDataSourceDelegate>)delegateForDataKey:(NSString *)dataKey {
+    id delegate;
+    if (dataKey) {
+        delegate = [self.mapTable objectForKey:dataKey];
+        if (!delegate) {
+            [self.mulDictionary removeObjectForKey:dataKey];
+            return nil;
+        }
+    }
+    
+    return delegate;
 }
 
 #pragma mark - NSFetchedResultsControllerDelegate
@@ -279,12 +315,14 @@
   didChangeSection:(id<NSFetchedResultsSectionInfo>)sectionInfo
            atIndex:(NSUInteger)sectionIndex
      forChangeType:(NSFetchedResultsChangeType)type {
-    id<LYDataSourceDelegate> delegate = [self.mapTable objectForKey:controller];
-    if(delegate && [delegate respondsToSelector:@selector(didChangeSection:atIndex:forChangeType:controller:)]) {
+    NSString *dataKey = [self dataKeyForController:controller];
+    id<LYDataSourceDelegate> delegate = [self delegateForDataKey:dataKey];
+    
+    if(delegate && [delegate respondsToSelector:@selector(didChangeSection:atIndex:forChangeType:dataKey:)]) {
         [delegate didChangeSection:sectionInfo
                            atIndex:sectionIndex
                      forChangeType:type
-                        controller:controller];
+                           dataKey:dataKey];
     }
 }
 
@@ -293,27 +331,33 @@
        atIndexPath:(NSIndexPath *)indexPath
      forChangeType:(NSFetchedResultsChangeType)type
       newIndexPath:(NSIndexPath *)newIndexPath {
-    id<LYDataSourceDelegate> delegate = [self.mapTable objectForKey:controller];
-    if(delegate && [delegate respondsToSelector:@selector(didChangeObject:atIndexPath:forChangeType:newIndexPath:controller:)]) {
+    NSString *dataKey = [self dataKeyForController:controller];
+    id<LYDataSourceDelegate> delegate = [self delegateForDataKey:dataKey];
+    
+    if(delegate && [delegate respondsToSelector:@selector(didChangeObject:atIndexPath:forChangeType:newIndexPath:dataKey:)]) {
         [delegate didChangeObject:anObject
                       atIndexPath:indexPath
                     forChangeType:type
                      newIndexPath:newIndexPath
-                       controller:controller];
+                          dataKey:dataKey];
     }
 }
 
 - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller {
-    id<LYDataSourceDelegate> delegate = [self.mapTable objectForKey:controller];
+    NSString *dataKey = [self dataKeyForController:controller];
+    id<LYDataSourceDelegate> delegate = [self delegateForDataKey:dataKey];
+    
     if(delegate && [delegate respondsToSelector:@selector(didChangeContent:)]) {
-        [delegate didChangeContent:controller];
+        [delegate didChangeContent:dataKey];
     }
 }
 
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller {
-    id<LYDataSourceDelegate> delegate = [self.mapTable objectForKey:controller];
+    NSString *dataKey = [self dataKeyForController:controller];
+    id<LYDataSourceDelegate> delegate = [self delegateForDataKey:dataKey];
+    
     if(delegate && [delegate respondsToSelector:@selector(willChangeContent:)]) {
-        [delegate willChangeContent:controller];
+        [delegate willChangeContent:dataKey];
     }
 }
 
