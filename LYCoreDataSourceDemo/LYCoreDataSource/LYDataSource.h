@@ -65,9 +65,11 @@ NS_ASSUME_NONNULL_BEGIN
           callback:(nullable Callback)callback;
 
 - (void)addObjects:(NSArray *)objects
+            entity:(NSString *)entityName
      syncPredicate:(nullable NSPredicate *)predicate;
 
 - (void)addObjects:(NSArray *)objects
+            entity:(NSString *)entityName
      syncPredicate:(nullable NSPredicate *)predicate
           callback:(nullable Callback)callback;
 
