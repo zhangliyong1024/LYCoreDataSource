@@ -83,18 +83,20 @@
 }
 
 - (void)addObjects:(NSArray *)objects
+            entity:(NSString *)entityName
      syncPredicate:(NSPredicate *)predicate {
     [self addObjects:objects
+              entity:entityName
        syncPredicate:predicate
             callback:nil];
 }
 
 - (void)addObjects:(NSArray *)objects
+            entity:(NSString *)entityName
      syncPredicate:(NSPredicate *)predicate
           callback:(Callback)callback {
     [self.privateContext performBlock:^{
         NSArray *objectsT = objects.copy;
-        NSString *entityName = [self entityNameForObject:objectsT.firstObject];
         
         BOOL syncFlag = NO;
         NSEntityDescription *desc = [NSEntityDescription entityForName:entityName
