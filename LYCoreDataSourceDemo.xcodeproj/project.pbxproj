@@ -17,9 +17,7 @@
 		2B671E3022F44FCA00E96835 /* LYCoreDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B671E2C22F44FCA00E96835 /* LYCoreDataManager.m */; };
 		2B671E3322F4558000E96835 /* NSManagedObject+LYCoreDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B671E3222F4558000E96835 /* NSManagedObject+LYCoreDataSource.m */; };
 		2B671E3622F458D600E96835 /* ContactDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B671E3522F458D600E96835 /* ContactDataSource.m */; };
-		2B671E3922FED4D200E96835 /* NSData+LYCoreDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B671E3822FED4D200E96835 /* NSData+LYCoreDataSource.m */; };
 		2B671E3C22FEDF4A00E96835 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B671E1422F44F8500E96835 /* ViewController.m */; };
-		2B671E3D22FEDF4A00E96835 /* NSData+LYCoreDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B671E3822FED4D200E96835 /* NSData+LYCoreDataSource.m */; };
 		2B671E3E22FEDF4A00E96835 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B671E1122F44F8500E96835 /* AppDelegate.m */; };
 		2B671E3F22FEDF4A00E96835 /* LYDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B671E2B22F44FCA00E96835 /* LYDataSource.m */; };
 		2B671E4022FEDF4A00E96835 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B671E2222F44F8600E96835 /* main.m */; };
@@ -52,8 +50,6 @@
 		2B671E3222F4558000E96835 /* NSManagedObject+LYCoreDataSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSManagedObject+LYCoreDataSource.m"; sourceTree = "<group>"; };
 		2B671E3422F458D600E96835 /* ContactDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactDataSource.h; sourceTree = "<group>"; };
 		2B671E3522F458D600E96835 /* ContactDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactDataSource.m; sourceTree = "<group>"; };
-		2B671E3722FED4D200E96835 /* NSData+LYCoreDataSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSData+LYCoreDataSource.h"; sourceTree = "<group>"; };
-		2B671E3822FED4D200E96835 /* NSData+LYCoreDataSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSData+LYCoreDataSource.m"; sourceTree = "<group>"; };
 		2B671E4B22FEDF4A00E96835 /* LYCoreDataSourcePub.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LYCoreDataSourcePub.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B671E4D22FEE6DD00E96835 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -123,8 +119,6 @@
 				2B671E2C22F44FCA00E96835 /* LYCoreDataManager.m */,
 				2B671E3122F4558000E96835 /* NSManagedObject+LYCoreDataSource.h */,
 				2B671E3222F4558000E96835 /* NSManagedObject+LYCoreDataSource.m */,
-				2B671E3722FED4D200E96835 /* NSData+LYCoreDataSource.h */,
-				2B671E3822FED4D200E96835 /* NSData+LYCoreDataSource.m */,
 			);
 			path = LYCoreDataSource;
 			sourceTree = "<group>";
@@ -227,7 +221,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2B671E1522F44F8500E96835 /* ViewController.m in Sources */,
-				2B671E3922FED4D200E96835 /* NSData+LYCoreDataSource.m in Sources */,
 				2B671E1222F44F8500E96835 /* AppDelegate.m in Sources */,
 				2B671E2F22F44FCA00E96835 /* LYDataSource.m in Sources */,
 				2B671E2322F44F8600E96835 /* main.m in Sources */,
@@ -243,7 +236,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2B671E3C22FEDF4A00E96835 /* ViewController.m in Sources */,
-				2B671E3D22FEDF4A00E96835 /* NSData+LYCoreDataSource.m in Sources */,
 				2B671E3E22FEDF4A00E96835 /* AppDelegate.m in Sources */,
 				2B671E3F22FEDF4A00E96835 /* LYDataSource.m in Sources */,
 				2B671E4022FEDF4A00E96835 /* main.m in Sources */,

@@ -7,7 +7,7 @@
 //
 
 #import "LYCoreDataManager.h"
-#import "NSData+LYCoreDataSource.h"
+#import <CommonCrypto/CommonDigest.h>
 
 @interface LYCoreDataManager()
 
@@ -42,7 +42,7 @@
     NSDictionary *hashs = model.entityVersionHashesByName;
     NSUInteger hash = 0;
     for (NSData *item in hashs.objectEnumerator) {
-        NSString *md5 = [item MD5];
+        NSString *md5 = [self MD5:item];
         hash += md5.hash;
     }
     
@@ -142,6 +142,18 @@
     if(context.parentContext) {
         [self save:context.parentContext];
     }
+}
+
+#pragma mark - private
+
+- (NSString *)MD5:(NSData *)data {
+    unsigned char r[CC_MD5_DIGEST_LENGTH];
+    
+    CC_MD5([data bytes], (CC_LONG)[data length], r);
+    NSString *MD5 = [NSString stringWithFormat:@"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+                     r[0], r[1], r[2], r[3], r[4], r[5], r[6], r[7], r[8], r[9], r[10], r[11], r[12], r[13], r[14], r[15]];
+    
+    return [MD5 uppercaseString];
 }
 
 @end
