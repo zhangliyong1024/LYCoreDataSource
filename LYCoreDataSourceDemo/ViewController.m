@@ -77,6 +77,7 @@
     contact.phone = @"1234567890";
     // predicate不填，默认同步所有数据
     [[ContactDataSource sharedInstance] addObjects:@[contact]
+                                            entity:[ContactEntity entityName]
                                      syncPredicate:nil];
 }
 
