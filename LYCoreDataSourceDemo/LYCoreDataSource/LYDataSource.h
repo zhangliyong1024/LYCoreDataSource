@@ -113,6 +113,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSArray *)allObjects:(NSString *)dataKey;
 
+- (NSArray *)sectionIndexTitles:(NSString *)dataKey;
+
 @end
 
 NS_ASSUME_NONNULL_END

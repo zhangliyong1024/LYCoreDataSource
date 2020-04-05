@@ -26,9 +26,15 @@
     
     self.title = @"点击删除";
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+    UIBarButtonItem *updateItem = [[UIBarButtonItem alloc] initWithTitle:@"更新关羽"
+                                                                   style:UIBarButtonItemStylePlain
+                                                                  target:self
+                                                                  action:@selector(update)];
+    UIBarButtonItem *addItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                                            target:self
                                                                                            action:@selector(touchAdd)];
+    
+    self.navigationItem.rightBarButtonItems = @[updateItem, addItem];
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"同步"
                                                                              style:UIBarButtonItemStylePlain
@@ -79,6 +85,14 @@
     [[ContactDataSource sharedInstance] addObjects:@[contact]
                                             entity:[ContactEntity entityName]
                                      syncPredicate:nil];
+}
+
+- (void)update {
+    ContactData *contact = [ContactData new];
+    contact.uid = @"10086";
+    contact.name = @"张飞";
+    contact.phone = @"1234567890";
+    [[ContactDataSource sharedInstance] addObject:contact];
 }
 
 #pragma mark - UITableViewDataSource

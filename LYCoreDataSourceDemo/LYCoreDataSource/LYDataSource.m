@@ -288,6 +288,10 @@
     return [[self.mulDictionary objectForKey:dataKey] fetchedObjects];
 }
 
+- (NSArray *)sectionIndexTitles:(NSString *)dataKey {
+    return [[self.mulDictionary objectForKey:dataKey] sectionIndexTitles];
+}
+
 - (NSString *)dataKeyForController:(NSFetchedResultsController *)controller {
     for (NSString *key in [self.mulDictionary keyEnumerator]) {
         if ([self.mulDictionary objectForKey:key] == controller) {
